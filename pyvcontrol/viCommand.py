@@ -17,7 +17,7 @@
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
-
+from .vi_commands_vitocal200g import VITOCAL200G
 import logging
 
 ACCESS_MODE = 'access_mode'
@@ -113,7 +113,7 @@ class viCommand(bytearray):
 
     # =============================================================
     # CHANGE YOUR COMMAND SET HERE:
-    command_set = VITOCAL_WO1C
+    command_set = VITOCAL_WO1C | VITOCAL200G
 
     # =============================================================
 
