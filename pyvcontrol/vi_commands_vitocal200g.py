@@ -6,15 +6,15 @@ ADDRESS = 'address'
 VITOCAL200G = {
     # Commands for Vitocal 200-G
 
-    'CwuTemp': {ADDRESS: '010d', LENGTH: 2, UNIT: 'IS10'},
-
     'TempZew': {ADDRESS: '0101', LENGTH: 2, UNIT: 'IS10'},
 
-    'TempGlikolWejscie': {ADDRESS: '0103', LENGTH: 2, UNIT: 'IS10'},
+    'CwuTemp': {ADDRESS: '010d', LENGTH: 2, UNIT: 'IS10'},
 
     'BuforTemp': {ADDRESS: '010b', LENGTH: 2, UNIT: 'IS10'},
 
     'CoTempZasilanie': {ADDRESS: '0114', LENGTH: 2, UNIT: 'IS10'},
+
+    'TempGlikolWejscie': {ADDRESS: '0103', LENGTH: 2, UNIT: 'IS10'},
 
     'WtornyTempZasilanie': {ADDRESS: '0105', LENGTH: 2, UNIT: 'IS10'},
 
@@ -22,8 +22,7 @@ VITOCAL200G = {
 
     'PompaWtornaMoc%': {ADDRESS: 'B421', LENGTH: 2, UNIT: 'IUNON'},
 
-    'BilansEnergetycznyCzynnika': {ADDRESS: '163F', LENGTH: 1, UNIT: 'IUNON'},
-
     'CwuTempZadana': {ADDRESS: '6000', LENGTH: 2, UNIT: 'IS10', ACCESS_MODE: 'write', 'min_value': 10,
                            'max_value': 60},
+    #'BilansEnergetycznyCzynnika': {ADDRESS: '163F', LENGTH: 1, UNIT: 'IUNON'},
 }
