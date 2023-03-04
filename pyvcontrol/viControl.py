@@ -47,6 +47,11 @@ class viControlException(Exception):
         super().__init__(msg)
 
 
+class viControlNotInitialized(Exception):
+    def __init__(self, msg):
+        super().__init__(msg)
+
+
 class viControl:
     # class to connect to viControl heating directly via Optolink
     # only supports WO1C with protocol P300
@@ -108,6 +113,8 @@ class viControl:
         # Check if sending was successful
         ack = self.vs.read(1)
         logging.debug(f'Received  {ack.hex()}')
+        if ack == ctrlcode['not_init']:
+            raise viControlNotInitialized('Communication not initialized')
         if ack != ctrlcode['acknowledge']:
             raise viControlException(f'Expected acknowledge byte, received {ack}')
 
