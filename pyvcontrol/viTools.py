@@ -23,13 +23,13 @@ import curses
 import time
 
 
-def viscancommands(addressrange):
+def viscancommands(addressrange, vicontrol: viControl == None):
     # brute force command scanner
     # hilft v.a. um die richtige Payload-Länge für bekannte Kommandos herauszufinden
 
     logging.basicConfig(filename='scancommands.log', filemode='w', level=logging.DEBUG)
 
-    vo = viControl()
+    vo = vicontrol if vicontrol else viControl() 
     vo.initialize_communication()
 
     for addr in addressrange:

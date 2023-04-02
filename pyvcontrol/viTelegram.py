@@ -140,7 +140,7 @@ class viTelegram(bytearray):
         return next(key for key, value in self.tTypes.items() if value == self.tType)
 
     @classmethod
-    def from_bytes(cls, b: bytearray):
+    def from_bytes(cls, b: bytearray, vicmd: viCommand):
         # parses a byte array and returns the corresponding telegram with properties vicmd etc.
         # when parsing a response telegram, the first byte (ACK Acknowledge) must be stripped first
         # Telegram bytes are [0:4]->header, [4:6]->command code, [6]->payload length, [7:-2]-> payload, [-1]:-> checksum
@@ -157,7 +157,6 @@ class viTelegram(bytearray):
         header = b[0:4]
         logging.debug(
             f'Header: {header.hex()}, tType={header[2:3].hex()}, tMode={header[3:4].hex()}, payload={b[7:-1].hex()}')
-        vicmd = viCommand._from_bytes(b[4:6])
         vt = viTelegram(vicmd, tType=header[2:3], tMode=header[3:4], payload=b[7:-1])
         return vt
 

@@ -64,32 +64,12 @@ class viControl:
         # destructor, releases serial port
         self.vs.disconnect()
 
-    @deprecated(version='1.3', reason="replaced by execute_read_command")
-    def execReadCmd(self, cmdname) -> viData:
-        """ sends a read command and gets the response."""
-        return self.execute_read_command(cmdname)
-
-    def execute_read_command(self, command_name) -> viData:
-        """ sends a read command and gets the response."""
-        vc = viCommand(command_name)
+    def read(self, vc: viCommand):
         return self.execute_command(vc, 'read')
 
-    @deprecated(version='1.3', reason="replaced by execute_write_command")
-    def execWriteCmd(self, cmdname, value) -> viData:
-        """ sends a write command and gets the response."""
-        return self.execute_write_command(cmdname, value=value)
-
-    def execute_write_command(self, command_name, value) -> viData:
-        """ sends a write command and gets the response."""
-        vc = viCommand(command_name)
+    def write(self, vc: viCommand, value):
         vd = viData.create(vc.unit, value)
         return self.execute_command(vc, 'write', payload=vd)
-
-    @deprecated(version='1.3', reason="replaced by execute_write_command")
-    def execFunctionCall(self, cmdname, *function_args) -> viData:
-        """ sends a function call command and gets response."""
-        payload = bytearray((len(function_args), *function_args))
-        return self.execute_command(cmdname, 'call', payload=payload)
 
     def execute_function_call(self, command_name, *function_args) -> viData:
         """ sends a function call command and gets response."""
@@ -103,7 +83,7 @@ class viControl:
         allowed_access_mode = {'read': ['read'], 'write': ['read', 'write'], 'call': ['call']}
         if access_mode not in allowed_access_mode[vc.access_mode]:
             raise viControlException(
-                f'command {vc.command_name} allows only {allowed_access_mode[vc.access_mode]} access')
+                f'command {vc} allows only {allowed_access_mode[vc.access_mode]} access')
 
         # send Telegram
         vt = viTelegram(vc, access_mode, payload=payload)
@@ -120,14 +100,16 @@ class viControl:
 
         # Receive response and evaluate data
         vr = self.vs.read(vt.response_length)  # receive response
-        vt = viTelegram.from_bytes(vr)
+        vt = viTelegram.from_bytes(vr, vc)
         logging.debug(f'Requested {vt.response_length} bytes. Received telegram {vr.hex()}')
         if vt.tType == viTelegram.tTypes['error']:
             raise viControlException(f'{access_mode} command returned an error')
         self.vs.send(ctrlcode['acknowledge'])  # send acknowledge
 
+        vi_data = viData.create(vt.vicmd.unit, vt.payload)
+        vc.vi_data = vi_data
         # return viData object from payload
-        return viData.create(vt.vicmd.unit, vt.payload)
+        return vi_data
 
     @deprecated(version='1.3', reason="replaced by initialize_communication.")
     def initComm(self):

@@ -24,5 +24,8 @@ VITOCAL200G = {
 
     'CwuTempZadana': {ADDRESS: '6000', LENGTH: 2, UNIT: 'IS10', ACCESS_MODE: 'write', 'min_value': 10,
                            'max_value': 60},
+
+    'Sprezarka' : {ADDRESS: '5000', LENGTH: 2, UNIT: 'IUNON', ACCESS_MODE: 'write', 'min_value': 0, 'max_value': 1}
+
     #'BilansEnergetycznyCzynnika': {ADDRESS: '163F', LENGTH: 1, UNIT: 'IUNON'},
 }

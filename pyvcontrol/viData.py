@@ -312,8 +312,12 @@ class viDataIS10(viData):
         super().extend(int(value * 10).to_bytes(self.len, 'little', signed=True))
 
     @property
-    def value(self):
+    def value_signed(self):
         return int.from_bytes(self, 'little', signed=True) / 10
+
+    @property
+    def value(self):
+        return int.from_bytes(self, 'little')
 
 
 class viDataIU10(viData):
