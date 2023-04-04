@@ -20,6 +20,7 @@
 import logging
 from pyvcontrol.viCommand import viCommand
 
+LOG = logging.getLogger(__name__)
 
 class viTelegramException(Exception):
     pass
@@ -155,7 +156,7 @@ class viTelegram(bytearray):
             raise viTelegramException('Startbyte not found')
 
         header = b[0:4]
-        logging.debug(
+        LOG.debug(
             f'Header: {header.hex()}, tType={header[2:3].hex()}, tMode={header[3:4].hex()}, payload={b[7:-1].hex()}')
         vt = viTelegram(vicmd, tType=header[2:3], tMode=header[3:4], payload=b[7:-1])
         return vt
@@ -165,9 +166,9 @@ class viTelegram(bytearray):
         # checksum is the last byte of the sum of all bytes in packet
         checksum = 0
         if len(packet) == 0:
-            logging.error('No bytes received to calculate checksum')
+            LOG.error('No bytes received to calculate checksum')
         elif packet[0:1] != cls.tStartByte:
-            logging.error('bytes to calculate checksum from does not start with start byte')
+            LOG.error('bytes to calculate checksum from does not start with start byte')
         else:
             checksum = sum(packet[1:]) % 256
         return checksum.to_bytes(1, 'big')

@@ -21,6 +21,8 @@ import logging
 from collections import namedtuple
 from struct import unpack
 
+LOG = logging.getLogger(__name__)
+
 
 class viDataException(Exception):
     def __init__(self, msg):
@@ -106,7 +108,7 @@ class viData(bytearray):
     def create(cls, datatype, *args):
         # select data type object based on type
         # args are passed as such to the constructor of the function
-        logging.debug(f'Data factory: request to produce Data type {datatype} with args {args}')
+        LOG.debug(f'Data factory: request to produce Data type {datatype} with args {args}')
         datatype_object = {'BA': viDataBA, 'DT': viDataDT, 'IS10': viDataIS10, 'IU10': viDataIU10,
                            'IU3600': viDataIU3600, 'IUNON': viDataIUNON, 'RT': viDataRT, 'OO': viDataOO,
                            'ES': viDataES, 'F_E': viDataEnergy,
