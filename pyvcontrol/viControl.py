@@ -114,7 +114,7 @@ class viControl:
 
 
     def initialize_communication(self):
-        log.debug('Init Communication to viControl....')
+        LOG.debug('Init Communication to viControl....')
         self.is_initialized = False
 
         # loop cases
