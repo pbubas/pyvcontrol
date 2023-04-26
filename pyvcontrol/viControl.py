@@ -127,7 +127,7 @@ class viControl:
             read_byte = self.vs.read(1)
             if read_byte == ctrlcode['acknowledge']:
                 # Schnittstelle hat auf den Initialisierungsstring mit OK geantwortet. Die Abfrage von Werten kann beginnen.
-                log.debug(f'Step {ii}: Initialization successful')
+                LOG.debug(f'Step {ii}: Initialization successful')
                 self.is_initialized = True
                 break
             elif read_byte == ctrlcode['not_init']:
