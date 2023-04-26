@@ -114,7 +114,7 @@ class viControl:
 
 
     def initialize_communication(self):
-        LOG.debug('Init Communication to viControl....')
+        LOG.info('Init Communication to viControl....')
         self.is_initialized = False
 
         # loop cases
@@ -127,21 +127,21 @@ class viControl:
             read_byte = self.vs.read(1)
             if read_byte == ctrlcode['acknowledge']:
                 # Schnittstelle hat auf den Initialisierungsstring mit OK geantwortet. Die Abfrage von Werten kann beginnen.
-                LOG.debug(f'Step {ii}: Initialization successful')
+                LOG.info(f'Step {ii}: Initialization successful')
                 self.is_initialized = True
                 break
             elif read_byte == ctrlcode['not_init']:
                 # Schnittstelle ist zurückgesetzt und wartet auf Daten; Antwort b'\x05' = Warten auf Initialisierungsstring
-                LOG.debug(f'Step {ii}: Viessmann ready, not initialized, send sync')
+                LOG.info(f'Step {ii}: Viessmann ready, not initialized, send sync')
                 self.vs.send(ctrlcode['sync_cmd'])
             elif read_byte == ctrlcode['error']:
                 # in case of error try to reset
                 LOG.error(f'The interface has reported an error (\x15), loop increment {ii}')
-                LOG.debug(f'Step {ii}: Send reset')
+                LOG.error(f'Step {ii}: Send reset')
                 self.vs.send(ctrlcode['reset_cmd'])
             else:
                 # send reset
-                LOG.debug(f'Received [{read_byte}]. Step {ii}: Send reset')
+                LOG.error(f'Received [{read_byte}]. Step {ii}: Send reset')
                 self.vs.send(ctrlcode['reset_cmd'])
 
         if not self.is_initialized:
@@ -169,12 +169,12 @@ class viSerial():
         # if not connected, try to acquire lock
         if self._connected:
             # do nothing
-            LOG.debug('Connect: Already connected')
+            LOG.info('Connect: Already connected')
             return
         if self._viessmann_lock.acquire(timeout=10):
             try:
                 # initialize serial connection
-                LOG.debug('Connecting ...')
+                LOG.info('Connecting ...')
                 self._serial.baudrate = self._control_set['Baudrate']
                 self._serial.parity = self._control_set['Parity']
                 self._serial.bytesize = self._control_set['Bytesize']
@@ -183,7 +183,7 @@ class viSerial():
                 self._serial.timeout = 0.25  # read method will try 10 times -> 2.5s max waiting time
                 self._serial.open()
                 self._connected = True
-                LOG.debug('Connected to {}'.format(self._serial_port))
+                LOG.info('Connected to {}'.format(self._serial_port))
             except Exception as e:
                 LOG.error('Could not connect to {}; Error: {}'.format(self._serial_port, e))
                 self._viessmann_lock.release()
@@ -197,7 +197,7 @@ class viSerial():
         self._serial = None
         self._viessmann_lock.release()
         self._connected = False
-        LOG.debug('Disconnected from viControl')
+        LOG.info('Disconnected from viControl')
 
     def send(self, packet):
         # if connected send the packet
@@ -222,6 +222,6 @@ class viSerial():
             if len(read_byte) == 0:
                 # if nothing received, wait and retry
                 failed_count += 1
-                LOG.debug(f'Serial read: retry ({failed_count})')
+                LOG.error(f'Serial read: retry ({failed_count})')
         LOG.debug(f'Received {len(total_read_bytes)}/{length} bytes')
         return bytes(total_read_bytes)
