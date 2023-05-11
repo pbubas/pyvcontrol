@@ -111,7 +111,7 @@ class viData(bytearray):
         LOG.debug(f'Data factory: request to produce Data type {datatype} with args {args}')
         datatype_object = {'BA': viDataBA, 'DT': viDataDT, 'IS10': viDataIS10, 'IU10': viDataIU10,
                            'IU3600': viDataIU3600, 'IUNON': viDataIUNON, 'RT': viDataRT, 'OO': viDataOO,
-                           'ES': viDataES, 'F_E': viDataEnergy,
+                           'ES': viDataES, 'F_E': viDataEnergy, 'ISNON': viDataISNON
                            }
         if datatype in datatype_object.keys():
             return datatype_object[datatype](*args)
@@ -371,6 +371,28 @@ class viDataIUNON(viData):
     def _create_from_value(self, value):
         # fixed-point number given
         super().extend(int(value).to_bytes(self.len, 'little', signed=False))
+
+    @property
+    def value(self):
+        return int.from_bytes(self, 'little', signed=False)
+    
+
+class viDataISNON(viData):
+    # IUNON - unsigned int
+    unit = {'code': 'ISNON', 'description': 'INT signed non', 'unit': ''},  # vito unit: UTI, CO
+
+    def __init__(self, value=b'\x00\x00', len=2):
+        # sets int representation based on input value
+        self.len = len  # length in bytes
+        super().__init__(value)
+
+    def _create_from_value(self, value):
+        # fixed-point number given
+        super().extend(int(value).to_bytes(self.len, 'little', signed=True))
+
+    @property
+    def value_signed(self):
+        return int.from_bytes(self, 'little', signed=True) / 10
 
     @property
     def value(self):
