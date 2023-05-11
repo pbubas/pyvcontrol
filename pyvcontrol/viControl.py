@@ -193,11 +193,15 @@ class viSerial():
 
     def disconnect(self):
         # release serial line and lock
-        self._serial.close()
-        self._serial = None
-        self._viessmann_lock.release()
+        LOG.info('Disconnecting serial port ...')
+        LOG.debug(f'lock status: {self._viessmann_lock}')
+        LOG.debug(f'serial configuration: {self.__dict__}')
+        self._serial.close() 
+        if self._viessmann_lock.locked(): self._viessmann_lock.release()
         self._connected = False
-        LOG.info('Disconnected from viControl')
+        LOG.info('Serial port disconnected')
+        LOG.debug(f'lock status: {self._viessmann_lock}')
+        LOG.debug(f'serial configuration: {self.__dict__}')
 
     def send(self, packet):
         # if connected send the packet
